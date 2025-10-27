@@ -1,0 +1,309 @@
+/* Spiritual UI Enhancement - Global Styles */
+
+:root {
+  /* Biblical Color Symbolism */
+  --kings-gold: #D4AF37;
+  --priests-purple: #6A0DAD;
+  --divine-light: #FFD700;
+  --covenant-blue: #4169E1;
+  --holy-fire: #FF6B35;
+  --living-water: #00CED1;
+  --emerald-glory: #50C878;
+  --crimson-covenant: #8B0000;
+  --sapphire-blue: #0F52BA;
+  
+  /* Divine Effects */
+  --glow-small: 0 0 10px var(--divine-light);
+  --glow-medium: 0 0 20px var(--divine-light);
+  --glow-large: 0 0 40px var(--divine-light);
+  --halo-effect: 0 0 60px rgba(212,175,55,0.6);
+  
+  /* Sacred Geometry */
+  --circle-radius: 50%;
+  --trinity-angle: 60deg;
+  --seven-segments: 14.28%;
+  
+  /* Spiritual Gradients */
+  --aurora-gradient: linear-gradient(135deg, 
+    rgba(212,175,55,0.1), 
+    rgba(106,13,173,0.1), 
+    rgba(65,105,225,0.1));
+  --covenant-gradient: linear-gradient(135deg,
+    var(--kings-gold),
+    var(--priests-purple),
+    var(--covenant-blue));
+  --heavenly-gradient: linear-gradient(135deg,
+    rgba(255,215,0,0.2),
+    rgba(80,200,120,0.2));
+}
+
+/* Sacred Geometry Patterns */
+.sacred-circle {
+  position: relative;
+}
+
+.sacred-circle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--divine-light);
+  opacity: 0.3;
+  animation: covenantPulse 3s ease-in-out infinite;
+}
+
+.sacred-triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background: var(--aurora-gradient);
+}
+
+/* Divine Animations */
+@keyframes divineReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gloryPulse {
+  0%, 100% {
+    box-shadow: var(--glow-small);
+  }
+  50% {
+    box-shadow: var(--glow-large);
+  }
+}
+
+@keyframes covenantShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes covenantPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes divineGlow {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 10px var(--divine-light));
+  }
+  50% {
+    filter: brightness(1.3) drop-shadow(0 0 30px var(--divine-light));
+  }
+}
+
+/* Class Utilities */
+.divine-glow {
+  animation: divineGlow 2s ease-in-out infinite;
+}
+
+.glory-pulse {
+  animation: gloryPulse 2s ease-in-out infinite;
+}
+
+.covenant-shimmer {
+  background: var(--covenant-gradient);
+  background-size: 200% 200%;
+  animation: covenantShimmer 3s ease infinite;
+}
+
+.heavenly-reveal {
+  animation: divineReveal 0.8s ease-out;
+}
+
+/* Spiritual Text Effects */
+.text-divine-light {
+  color: var(--divine-light);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.text-kings-gold {
+  color: var(--kings-gold);
+}
+
+.text-priests-purple {
+  color: var(--priests-purple);
+}
+
+.text-aurora {
+  background: var(--covenant-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Holy Borders */
+.border-divine {
+  border: 2px solid var(--divine-light);
+  box-shadow: var(--glow-small);
+}
+
+.border-covenant {
+  border: 2px solid transparent;
+  background: var(--covenant-gradient);
+  background-clip: padding-box;
+  box-shadow: inset 0 0 20px rgba(212,175,55,0.3);
+}
+
+/* Spiritual Buttons */
+.btn-king {
+  background: linear-gradient(135deg, var(--kings-gold), #FFD700);
+  color: white;
+  box-shadow: 0 0 20px rgba(212,175,55,0.5);
+}
+
+.btn-king:hover {
+  box-shadow: 0 0 40px rgba(212,175,55,0.8);
+  transform: translateY(-2px);
+}
+
+.btn-priest {
+  background: linear-gradient(135deg, var(--priests-purple), #8B2FC9);
+  color: white;
+  box-shadow: 0 0 20px rgba(106,13,173,0.5);
+}
+
+.btn-priest:hover {
+  box-shadow: 0 0 40px rgba(106,13,173,0.8);
+  transform: translateY(-2px);
+}
+
+.btn-covenant {
+  background: var(--covenant-gradient);
+  color: white;
+  animation: covenantShimmer 3s ease infinite;
+}
+
+/* Mountain Cards */
+.mountain-conquered {
+  border-left: 4px solid var(--divine-light);
+  background: linear-gradient(90deg, 
+    rgba(212,175,55,0.1), 
+    transparent);
+  box-shadow: var(--glow-small);
+}
+
+.mountain-potential {
+  border-left: 4px solid var(--covenant-blue);
+  background: linear-gradient(90deg, 
+    rgba(65,105,225,0.1), 
+    transparent);
+}
+
+/* Sacred Geometry Backgrounds */
+.bg-sacred-pattern {
+  background-image: 
+    repeating-linear-gradient(45deg, 
+      transparent, 
+      transparent 10px, 
+      rgba(212,175,55,0.03) 10px, 
+      rgba(212,175,55,0.03) 20px
+    ),
+    radial-gradient(circle at 50% 50%, rgba(106,13,173,0.05), transparent);
+}
+
+.bg-starfield {
+  background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent);
+  background-size: 200% 200%, 200% 200%, 100% 100%, 100% 100%;
+  animation: starFieldFloat 20s linear infinite;
+}
+
+@keyframes starFieldFloat {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%, -100% -100%, 50% 50%, -50% -50%;
+  }
+}
+
+/* Glass Morphism with Divine Touch */
+.glass-divine {
+  background: rgba(13, 19, 33, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212,175,55,0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 0 20px rgba(212,175,55,0.1);
+}
+
+/* Kings & Priests Balance Visual */
+.balance-crown {
+  color: var(--kings-gold);
+  filter: drop-shadow(0 0 10px rgba(212,175,55,0.8));
+}
+
+.balance-cross {
+  color: var(--priests-purple);
+  filter: drop-shadow(0 0 10px rgba(106,13,173,0.8));
+}
+
+.balance-harmony {
+  background: linear-gradient(90deg, var(--kings-gold), var(--priests-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Prophetic Timing Indicator */
+.prophetic-alert {
+  animation: gloryPulse 2s ease-in-out infinite;
+  border: 2px solid var(--divine-light);
+}
+
+/* Joseph's Coat Colors */
+.coat-plenty {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+}
+
+.coat-harvest {
+  background: linear-gradient(135deg, #228B22, #90EE90);
+}
+
+.coat-preparation {
+  background: linear-gradient(135deg, #4169E1, #87CEEB);
+}
+
+.coat-famine {
+  background: linear-gradient(135deg, #4B0082, #9370DB);
+}
+
