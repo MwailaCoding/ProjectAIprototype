@@ -42,6 +42,7 @@ interface SpeechRecognitionErrorEvent {
 
 interface UseSpeechRecognitionReturn {
   transcript: string;
+  interimTranscript: string;
   isListening: boolean;
   isSupported: boolean;
   startListening: () => void;
@@ -51,6 +52,7 @@ interface UseSpeechRecognitionReturn {
 
 export function useSpeechRecognition(onResult?: (transcript: string) => void): UseSpeechRecognitionReturn {
   const [transcript, setTranscript] = useState('');
+  const [interimTranscript, setInterimTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSupported, setIsSupported] = useState(false);
@@ -77,23 +79,29 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
 
     // Event handlers
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      let interimTranscript = '';
-      let finalTranscript = '';
+      let interimText = '';
+      let finalText = '';
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i].item(0).transcript;
         
         if (event.results[i].isFinal) {
-          finalTranscript += transcript + ' ';
+          finalText += transcript + ' ';
         } else {
-          interimTranscript += transcript;
+          interimText += transcript;
         }
       }
 
-      if (finalTranscript) {
-        setTranscript(finalTranscript.trim());
+      // Update interim transcript in real-time
+      if (interimText) {
+        setInterimTranscript(interimText);
+      }
+
+      if (finalText) {
+        setTranscript(finalText.trim());
+        setInterimTranscript(''); // Clear interim when final arrives
         if (onResult) {
-          onResult(finalTranscript.trim());
+          onResult(finalText.trim());
         }
       }
     };
@@ -128,6 +136,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
 
     try {
       setTranscript('');
+      setInterimTranscript('');
       setError(null);
       setIsListening(true);
       recognitionRef.current.start();
@@ -151,6 +160,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
 
   return {
     transcript,
+    interimTranscript,
     isListening,
     isSupported,
     startListening,
@@ -158,5 +168,8 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     error
   };
 }
+
+
+
 
 

@@ -25,6 +25,7 @@ export default function AIChatInterface({ coFounderName, projectContext }: AICha
   // Voice hooks
   const { 
     transcript, 
+    interimTranscript,
     isListening, 
     startListening, 
     stopListening, 
@@ -191,10 +192,23 @@ export default function AIChatInterface({ coFounderName, projectContext }: AICha
           </button>
         </div>
       </div>
+      {/* Live Transcript Display */}
+      {isListening && interimTranscript && (
+        <div className="mt-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
+          <div className="flex items-center space-x-2 mb-1">
+            <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-pulse"></div>
+            <p className="text-xs text-gray-400">Speaking...</p>
+          </div>
+          <p className="text-sm text-white">
+            {interimTranscript}
+            <span className="inline-block w-1.5 h-4 bg-cyan-500 ml-1 animate-pulse"></span>
+          </p>
+        </div>
+      )}
       {speechError && (
         <p className="text-xs text-red-400 mt-2">{speechError}</p>
       )}
-      {isListening && (
+      {isListening && !interimTranscript && (
         <p className="text-xs text-cyan-400 mt-2 animate-pulse">Listening...</p>
       )}
     </div>
