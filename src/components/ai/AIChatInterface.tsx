@@ -57,8 +57,10 @@ export default function AIChatInterface({ coFounderName, projectContext }: AICha
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI processing
-    setTimeout(() => {
+    // Generate AI response
+    setIsTyping(true);
+    
+    try {
       const aiResponse = getCoFounderAdvice(coFounderName, projectContext);
       const aiMessage: Message = {
         type: 'ai',
@@ -66,13 +68,22 @@ export default function AIChatInterface({ coFounderName, projectContext }: AICha
         timestamp: new Date()
       };
       setMessages(prev => [...prev, aiMessage]);
-      setIsTyping(false);
       
       // Speak the response if voice is enabled
       if (voiceEnabled) {
         speak(aiResponse.text, coFounderName);
       }
-    }, 1000);
+    } catch (error) {
+      console.error('Error generating response:', error);
+      const errorMessage: Message = {
+        type: 'ai',
+        text: "I encountered an error. Could you try rephrasing your question?",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
   };
   
   const handleVoiceToggle = () => {

@@ -1,7 +1,9 @@
 // Conversation Engine - Generates context-aware responses
-// Uses free Hugging Face Inference API as primary, fallback to local responses
+// Uses intelligent router to combine knowledge base + API responses
 
 import { getCoFounderAdvice } from './aiEngine';
+import { routeQuery, QueryResponse } from './intelligentRouter';
+import { searchKnowledgeBase, getQuickAnswer } from './knowledgeBase';
 
 interface StudentContext {
   name?: string;
@@ -38,21 +40,44 @@ function getStudentContext(): StudentContext {
   };
 }
 
-export function generateResponse(
+export async function generateResponse(
+  query: string, 
+  personality: string = 'The Builder'
+): Promise<ConversationResponse> {
+  const context = getStudentContext();
+  const lowerQuery = query.toLowerCase().trim();
+
+  // Use intelligent router to get best response
+  const routedResponse = await routeQuery(query, context, personality);
+  
+  return {
+    text: routedResponse.answer,
+    shouldNavigate: routedResponse.shouldNavigate
+  };
+}
+
+// Synchronous version for backwards compatibility
+export function generateResponseSync(
   query: string, 
   personality: string = 'The Builder'
 ): ConversationResponse {
   const context = getStudentContext();
   const lowerQuery = query.toLowerCase().trim();
 
-  // Handle greetings
+  // Quick responses for common queries
   if (lowerQuery.match(/^(hi|hello|hey|greetings)/)) {
     return {
       text: `Hello! I'm your AI co-founder, ${personality}. How can I assist you with your kingdom venture today?`
     };
   }
 
-  // Handle balance inquiries
+  // Try knowledge base first for instant responses
+  const quickAnswer = getQuickAnswer(query);
+  if (quickAnswer) {
+    return { text: quickAnswer };
+  }
+
+  // Handle specific queries
   if (lowerQuery.includes('balance')) {
     const { king, priest } = context.balance || { king: 47, priest: 47 };
     return {
@@ -60,7 +85,6 @@ export function generateResponse(
     };
   }
 
-  // Handle territory inquiries
   if (lowerQuery.includes('territory') || lowerQuery.includes('mountain')) {
     const conquered = context.territoriesConquered || 4;
     return {
@@ -68,7 +92,6 @@ export function generateResponse(
     };
   }
 
-  // Handle project inquiries
   if (lowerQuery.includes('project') || lowerQuery.includes('venture')) {
     const projects = context.projects || [];
     const count = projects.length;
@@ -77,7 +100,6 @@ export function generateResponse(
     };
   }
 
-  // Handle season inquiries
   if (lowerQuery.includes('season')) {
     const season = context.currentSeason || 'plenty';
     return {
@@ -85,7 +107,6 @@ export function generateResponse(
     };
   }
 
-  // Handle learning progress inquiries
   if (lowerQuery.includes('learning') || lowerQuery.includes('progress') || lowerQuery.includes('education')) {
     const progress = context.learningProgress || 45;
     return {
@@ -93,7 +114,6 @@ export function generateResponse(
     };
   }
 
-  // Handle general advice requests
   if (lowerQuery.match(/^(advice|guidance|help|suggest)/)) {
     const advice = getCoFounderAdvice(personality, { mountain: context.currentView });
     return {
@@ -101,7 +121,7 @@ export function generateResponse(
     };
   }
 
-  // Default fallback response
+  // Default fallback
   return {
     text: `I understand you're asking: "${query}". Let me think about this from a ${personality} perspective... ${getCoFounderAdvice(personality, {}).text}`
   };

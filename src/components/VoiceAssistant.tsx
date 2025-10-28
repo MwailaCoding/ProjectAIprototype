@@ -6,6 +6,15 @@ import { parseVoiceCommand, detectWakeWord } from '../utils/voiceCommands';
 import { generateResponse } from '../utils/conversationEngine';
 import { ConversationMessage, VoiceCommand } from '../types/voice';
 
+const QUICK_TOPICS = [
+  { label: '7 Mountains', keywords: 'seven mountains' },
+  { label: 'Kings & Priests', keywords: 'kings priests balance' },
+  { label: 'Joseph Principle', keywords: 'joseph principle seasons' },
+  { label: 'My Status', keywords: 'my balance territories progress' },
+  { label: 'Start Project', keywords: 'how start project launch venture' },
+  { label: 'Navigation', keywords: 'show dashboard territory map' }
+];
+
 export default function VoiceAssistant() {
   const [conversation, setConversation] = useState<ConversationMessage[]>([]);
   const [isListening, setIsListening] = useState(false);
@@ -70,8 +79,8 @@ export default function VoiceAssistant() {
       return;
     }
 
-    // Generate contextual response
-    const response = generateResponse(commandText, personality);
+    // Generate contextual response using async version
+    const response = await generateResponse(commandText, personality);
     const aiMessage: ConversationMessage = {
       id: (Date.now() + 1).toString(),
       type: 'assistant',
@@ -83,6 +92,11 @@ export default function VoiceAssistant() {
     
     // Speak the response
     speak(aiMessage.text, personality);
+  };
+  
+  const handleQuickTopic = (keywords: string) => {
+    // Simulate clicking mic, asking the question, and processing
+    processCommand(keywords);
   };
 
   const toggleListening = () => {
@@ -259,13 +273,30 @@ export default function VoiceAssistant() {
           </div>
         )}
 
+        {/* Quick Topics */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <h3 className="text-sm font-semibold text-gray-400 mb-3">Try Asking About:</h3>
+          <div className="flex flex-wrap gap-2">
+            {QUICK_TOPICS.map((topic, index) => (
+              <button
+                key={index}
+                onClick={() => handleQuickTopic(topic.keywords)}
+                className="px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-lg text-sm hover:bg-cyan-500/20 transition-all"
+              >
+                {topic.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Conversation History */}
         <div className="max-w-2xl mx-auto">
           <h2 className="text-xl font-semibold text-white mb-4">Conversation</h2>
           <div className="bg-slate-800 rounded-xl p-6 space-y-4 max-h-96 overflow-y-auto">
             {conversation.length === 0 && (
               <div className="text-center text-gray-400 text-sm py-8">
-                No conversation yet. Click the microphone or say "Hey Studio" to start.
+                <p className="mb-3">No conversation yet.</p>
+                <p>Click a topic above, click the microphone, or say "Hey Studio" to start.</p>
               </div>
             )}
             {conversation.map((msg) => (

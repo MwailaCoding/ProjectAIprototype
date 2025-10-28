@@ -82,8 +82,8 @@ export default function FloatingVoiceWidget({
       return;
     }
 
-    // Generate response
-    const aiResponse = generateResponse(commandText, personality);
+    // Generate response (async)
+    const aiResponse = await generateResponse(commandText, personality);
     const response: ConversationMessage = {
       id: (Date.now() + 1).toString(),
       type: 'assistant',
