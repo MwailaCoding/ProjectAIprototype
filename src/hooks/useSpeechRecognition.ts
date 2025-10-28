@@ -83,18 +83,25 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       let finalText = '';
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i].item(0).transcript;
+        const result = event.results[i];
+        const transcript = result.item(0).transcript;
         
-        if (event.results[i].isFinal) {
+        if (result.isFinal) {
           finalText += transcript + ' ';
         } else {
-          interimText += transcript;
+          interimText += transcript + ' ';
         }
       }
 
-      // Update interim transcript in real-time
-      if (interimText) {
-        setInterimTranscript(interimText);
+      // Debug logging
+      console.log('Interim:', interimText, 'Final:', finalText);
+
+      // Update interim transcript in real-time (show what you're saying)
+      if (interimText.trim()) {
+        setInterimTranscript(interimText.trim());
+      } else if (!finalText) {
+        // Keep showing "Speak now..." if no transcript yet
+        setInterimTranscript('');
       }
 
       if (finalText) {

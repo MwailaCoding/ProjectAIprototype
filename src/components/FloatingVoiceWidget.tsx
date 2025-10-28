@@ -167,18 +167,22 @@ export default function FloatingVoiceWidget({
             </div>
           </div>
 
-          {/* Live Transcript */}
-          {isListening && interimTranscript && (
+          {/* Live Transcript - Always show when listening */}
+          {isListening && (
             <div className="px-4 pt-4">
               <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
                 <div className="flex items-center space-x-2 mb-2">
                   <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-pulse"></div>
                   <p className="text-xs text-gray-400">Listening...</p>
                 </div>
-                <p className="text-white text-sm">
-                  {interimTranscript}
-                  <span className="inline-block w-1.5 h-4 bg-cyan-500 ml-1 animate-pulse"></span>
-                </p>
+                {interimTranscript ? (
+                  <p className="text-white text-sm">
+                    {interimTranscript}
+                    <span className="inline-block w-1.5 h-4 bg-cyan-500 ml-1 animate-pulse"></span>
+                  </p>
+                ) : (
+                  <p className="text-gray-400 text-sm italic">Speak now...</p>
+                )}
               </div>
             </div>
           )}

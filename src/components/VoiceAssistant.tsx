@@ -225,7 +225,7 @@ export default function VoiceAssistant() {
           </div>
         </div>
 
-        {/* Live Transcript Display */}
+        {/* Live Transcript Display - Always show when listening */}
         {recListening && (
           <div className="mb-6 max-w-2xl mx-auto">
             <div className="bg-slate-800/50 border border-cyan-500/30 rounded-2xl p-6">
@@ -233,15 +233,14 @@ export default function VoiceAssistant() {
                 <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
                 <p className="text-xs text-gray-400 uppercase tracking-wider">Listening...</p>
               </div>
-              <div className="min-h-[60px]">
-                {interimTranscript && (
+              <div className="min-h-[60px] flex items-center">
+                {interimTranscript ? (
                   <p className="text-lg text-white font-medium">
                     {interimTranscript}
                     <span className="inline-block w-2 h-5 bg-cyan-500 ml-1 animate-pulse"></span>
                   </p>
-                )}
-                {!interimTranscript && (
-                  <p className="text-gray-400 text-center py-4">Speak now...</p>
+                ) : (
+                  <p className="text-gray-400 text-center w-full italic">Speak now...</p>
                 )}
               </div>
             </div>
