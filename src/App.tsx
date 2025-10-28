@@ -24,6 +24,8 @@ import Testimonials from './components/Testimonials';
 import RevenueModel from './components/RevenueModel';
 import LegalStructure from './components/LegalStructure';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
+import VoiceAssistant from './components/VoiceAssistant';
+import FloatingVoiceWidget from './components/FloatingVoiceWidget';
 
 function App() {
   const [currentView, setCurrentView] = useState('landing');
@@ -78,6 +80,8 @@ function App() {
         return <LegalStructure />;
       case 'analytics':
         return <AnalyticsDashboard />;
+      case 'voice':
+        return <VoiceAssistant />;
       default:
         return <LandingPage onNavigate={setCurrentView} />;
     }
@@ -89,6 +93,10 @@ function App() {
         <Navigation currentView={currentView} onNavigate={setCurrentView} />
       )}
       {renderView()}
+      {/* Floating Voice Widget - accessible from all pages */}
+      {currentView !== 'landing' && (
+        <FloatingVoiceWidget currentView={currentView} onNavigate={setCurrentView} />
+      )}
     </div>
   );
 }

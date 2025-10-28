@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, LayoutDashboard, Map, Scale, TrendingUp, Rocket, BarChart3, Menu, X, Book, Target, Presentation, DollarSign, Building2, Lightbulb, Users, Coins, FileText, Handshake, Calendar, TrendingUp as TrendingUpIcon, Users as UsersIcon, Quote, DollarSign as DollarSignIcon, Shield, Briefcase, Building2 as Building2Icon } from 'lucide-react';
+import { Home, LayoutDashboard, Map, Scale, TrendingUp, Rocket, BarChart3, Menu, X, Book, Target, Presentation, DollarSign, Building2, Lightbulb, Users, Coins, FileText, Handshake, Calendar, TrendingUp as TrendingUpIcon, Users as UsersIcon, Quote, DollarSign as DollarSignIcon, Shield, Briefcase, Building2 as Building2Icon, Mic } from 'lucide-react';
 
 interface NavigationProps {
   currentView: string;
@@ -24,6 +24,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
     { id: 'wealth', label: 'Wealth', icon: Coins },
     { id: 'pitch', label: 'Pitch', icon: Presentation },
     { id: 'fundraising', label: 'Fundraising', icon: DollarSign },
+    { id: 'voice', label: 'Voice Assistant', icon: Mic },
     { id: 'studios', label: 'Studios', icon: Building2 },
     { id: 'problems', label: 'Problems', icon: Lightbulb },
     { id: 'team', label: 'Team', icon: Users },
