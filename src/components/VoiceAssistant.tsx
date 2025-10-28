@@ -12,6 +12,10 @@ export default function VoiceAssistant() {
   const [wakeWordMode, setWakeWordMode] = useState(false);
   const [personality, setPersonality] = useState<'The Builder' | 'The Steward' | 'The Strategist' | 'The Sage'>('The Builder');
   const [showSettings, setShowSettings] = useState(false);
+  const [browserSupport, setBrowserSupport] = useState({
+    speech: 'speechSynthesis' in window,
+    recognition: !!(window as any).SpeechRecognition || !!(window as any).webkitSpeechRecognition
+  });
 
   const handleTranscript = (transcript: string) => {
     if (transcript) {
@@ -100,6 +104,20 @@ export default function VoiceAssistant() {
       <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
 
       <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* Browser Support Warning */}
+        {(!browserSupport.speech || !browserSupport.recognition) && (
+          <div className="mb-6 p-4 bg-yellow-500/20 border border-yellow-500/50 rounded-xl">
+            <h3 className="text-yellow-400 font-semibold mb-2">Browser Compatibility Notice</h3>
+            <div className="text-sm text-gray-300 space-y-1">
+              <p>• Speech Recognition: {browserSupport.recognition ? '✅ Supported' : '❌ Not Supported'}</p>
+              <p>• Speech Synthesis: {browserSupport.speech ? '✅ Supported' : '❌ Not Supported'}</p>
+              {!browserSupport.recognition && (
+                <p className="text-yellow-400 mt-2">💡 Tip: Use Chrome, Edge, or Safari for best voice assistant experience</p>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

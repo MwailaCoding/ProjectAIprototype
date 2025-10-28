@@ -107,8 +107,25 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      console.error('Speech recognition error:', event.error);
-      setError(`Speech recognition error: ${event.error}`);
+      console.error('Speech recognition error:', event.error, event.message);
+      let errorMessage = `Speech recognition error: ${event.error}`;
+      
+      // Handle specific error types
+      if (event.error === 'network') {
+        errorMessage = 'Network error. Check your internet connection.';
+      } else if (event.error === 'not-allowed') {
+        errorMessage = 'Microphone permission denied. Please allow microphone access.';
+      } else if (event.error === 'no-speech') {
+        errorMessage = 'No speech detected. Try again.';
+      } else if (event.error === 'aborted') {
+        errorMessage = 'Speech recognition was interrupted.';
+      } else if (event.error === 'audio-capture') {
+        errorMessage = 'Microphone not found or not accessible.';
+      } else if (event.error === 'service-not-allowed') {
+        errorMessage = 'Speech recognition service is not available.';
+      }
+      
+      setError(errorMessage);
       setIsListening(false);
     };
 

@@ -47,33 +47,47 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
     utterance.pitch = settings.pitch || 1.0;
     utterance.volume = 1;
 
-    // Choose voice based on personality
-    const voices = speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      // Try to find a good voice match
-      const personalityVoices: Record<string, string[]> = {
-        'The Builder': ['male', 'deep'],
-        'The Steward': ['female', 'soft'],
-        'The Strategist': ['male', 'confident'],
-        'The Sage': ['male', 'calm', 'wise']
-      };
+    // Function to set voice (called after voices are loaded)
+    const setVoice = () => {
+      try {
+        const voices = speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          // Try to find a good voice match
+          const personalityVoices: Record<string, string[]> = {
+            'The Builder': ['male', 'deep'],
+            'The Steward': ['female', 'soft'],
+            'The Strategist': ['male', 'confident'],
+            'The Sage': ['male', 'calm', 'wise']
+          };
 
-      const preferredTypes = personalityVoices[personality] || personalityVoices['The Builder'];
-      let selectedVoice = null;
+          const preferredTypes = personalityVoices[personality] || personalityVoices['The Builder'];
+          let selectedVoice = null;
 
-      for (const voice of voices) {
-        const nameLower = voice.name.toLowerCase();
-        if (preferredTypes.some(type => nameLower.includes(type))) {
-          selectedVoice = voice;
-          break;
+          for (const voice of voices) {
+            const nameLower = voice.name.toLowerCase();
+            if (preferredTypes.some(type => nameLower.includes(type))) {
+              selectedVoice = voice;
+              break;
+            }
+          }
+
+          if (selectedVoice) {
+            utterance.voice = selectedVoice;
+          } else if (voices.length > 0) {
+            utterance.voice = voices[0];
+          }
         }
+      } catch (error) {
+        console.warn('Error setting voice:', error);
       }
+    };
 
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
-      } else if (voices.length > 0) {
-        utterance.voice = voices[0];
-      }
+    // Set voice if available, otherwise wait for voices to load
+    setVoice();
+    
+    // If no voices available yet, wait for the voiceschanged event
+    if (speechSynthesis.getVoices().length === 0) {
+      speechSynthesis.addEventListener('voiceschanged', setVoice, { once: true });
     }
 
     // Event handlers
