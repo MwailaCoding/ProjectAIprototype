@@ -32,6 +32,24 @@ function buildContextPrompt(context: StudentContext): string {
   lines.push(`- Joseph Principle: Strategic timing based on seasons (plenty, harvest, preparation, famine)`);
   lines.push(`- Generational Wealth: Building ventures that impact five generations`);
   
+  lines.push(`\nKey Features:`);
+  lines.push(`- Dashboard: Overview of progress, metrics, current project`);
+  lines.push(`- Learning Path: Tracks Datacamp, ALX, PLP progress with certificates`);
+  lines.push(`- Zindi Challenges: Real-world problems with $3K-$10K prizes`);
+  lines.push(`- Territory Map: Visual 7 mountains progress tracking`);
+  lines.push(`- Kings & Priests Balance: Dual-score system prevents burnout`);
+  lines.push(`- Seasons Hub: Joseph Principle timing intelligence`);
+  lines.push(`- Project Incubator: Launch ventures with AI co-founders`);
+  lines.push(`- Wealth Simulator: 5-generation impact modeling`);
+  lines.push(`- Pitch Builder: Create investor presentations`);
+  lines.push(`- Fundraising Dashboard: Investment readiness tracking`);
+  lines.push(`- Studio Incubation: 6 specialized industry studios`);
+  lines.push(`- Problem Matcher: Strategic problems by mountain`);
+  lines.push(`- Team Matcher: Find co-founders`);
+  lines.push(`- Analytics: Detailed progress metrics`);
+  
+  lines.push(`\nAnswer as a helpful AI assistant for Project AI Studio. Be specific, encouraging, and kingdom-focused.`);
+  
   return lines.join('\n');
 }
 

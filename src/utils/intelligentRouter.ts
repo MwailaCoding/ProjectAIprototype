@@ -67,7 +67,7 @@ async function getLocalResponse(query: string, context: StudentContext): Promise
   // Search knowledge base
   const kbResults = searchKnowledgeBase(query);
   
-  if (kbResults.length > 0 && kbResults[0].confidence > 0.5) {
+  if (kbResults.length > 0 && kbResults[0].confidence > 0.3) {
     const bestMatch = kbResults[0].topic;
     
     // Check if this is a navigation request
@@ -83,8 +83,13 @@ async function getLocalResponse(query: string, context: StudentContext): Promise
       }
     }
     
+    // For high confidence, use short answer, for lower use detailed
+    const answer = kbResults[0].confidence > 0.7 
+      ? bestMatch.shortAnswer
+      : bestMatch.detailedAnswer;
+    
     return {
-      answer: bestMatch.shortAnswer,
+      answer,
       source: 'knowledge-base',
       confidence: kbResults[0].confidence,
       shouldNavigate
@@ -132,46 +137,56 @@ export async function routeQuery(
 ): Promise<QueryResponse> {
   const intent = detectIntent(query);
   
-  // Fast local responses for common queries
-  if (intent === 'navigation' || intent === 'status') {
+  // Fast local responses for navigation ONLY
+  if (intent === 'navigation') {
     const local = await getLocalResponse(query, context);
     if (local.confidence > 0.5) {
       return local;
     }
   }
   
-  // Knowledge base for definitions
-  if (intent === 'definition' || intent === 'explanation' || intent === 'how-to') {
-    const local = await getLocalResponse(query, context);
-    if (local.confidence > 0.7) {
-      return local;
-    }
-  }
-  
-  // For complex analysis/advice queries, try API (but with 3 second timeout)
-  if (intent === 'analysis' || intent === 'advice' || intent === 'unknown') {
-    // Try API with timeout
-    const apiPromise = getAIResponse(query, context);
-    const timeoutPromise = new Promise<null>((resolve) => 
-      setTimeout(() => resolve(null), 3000)
-    );
-    
-    const apiResponse = await Promise.race([apiPromise, timeoutPromise]);
-    
-    if (apiResponse && apiResponse.response) {
-      return {
-        answer: apiResponse.response,
-        source: 'api',
-        confidence: 0.7
-      };
-    }
-  }
-  
-  // Always fallback to local or contextual response
-  const fallback = await getContextualFallback(query, context);
+  // Try knowledge base first for all queries
   const local = await getLocalResponse(query, context);
   
-  // Return the one with higher confidence
-  return local.confidence > fallback.confidence ? local : fallback;
+  // If we have a good local answer (high confidence), use it
+  if (local.confidence > 0.6) {
+    return local;
+  }
+  
+  // For anything complex, unclear, or with low confidence, try Hugging Face API
+  // This includes: analysis, advice, definitions, how-to, status, unknown - basically everything
+  try {
+    const apiResponse = await Promise.race([
+      getAIResponse(query, context),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 4000))
+    ]);
+    
+    if (apiResponse && apiResponse.response && apiResponse.response.trim()) {
+      // Clean up the response
+      let cleanResponse = apiResponse.response.trim();
+      
+      // If local had some answer, prepend it with "Based on your profile, " for context
+      if (local.confidence > 0.3 && local.answer) {
+        cleanResponse = `Based on your current progress and the Project AI Studio platform, ${cleanResponse}`;
+      }
+      
+      return {
+        answer: cleanResponse,
+        source: 'api',
+        confidence: 0.8
+      };
+    }
+  } catch (error) {
+    console.warn('API call failed:', error);
+  }
+  
+  // Fallback to local if API didn't work
+  if (local.confidence > 0.3) {
+    return local;
+  }
+  
+  // Final fallback
+  const fallback = await getContextualFallback(query, context);
+  return fallback;
 }
 

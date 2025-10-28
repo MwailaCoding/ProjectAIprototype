@@ -229,6 +229,196 @@ export const knowledgeBase: Record<string, KnowledgeTopic> = {
     relatedTopics: ['progress-tracking'],
     suggestedActions: ['Navigating to Analytics now...'],
     category: 'navigation'
+  },
+  
+  // Feature: Zindi Challenges
+  'challenges': {
+    keywords: ['challenges', 'zindi', 'competitions', 'prize', 'problem solving', 'real world problems'],
+    shortAnswer: 'Zindi Challenges features real-world problems from Africa with prizes ranging from $3K to $10K. You can browse challenges by category and track your progress.',
+    detailedAnswer: `Zindi Challenges are real-world problems from Zindi.africa that you can solve to gain experience and win prizes. Each challenge has a prize amount ($3K-$10K), deadline, and impact metrics. You can filter challenges by category (Finance, Healthcare, Agriculture, etc.) and match them to your target mountain. Challenges help you build your portfolio while solving African problems.`,
+    relatedTopics: ['real-world-impact', 'problem-solving'],
+    suggestedActions: ['Navigate to Zindi Challenges', 'Browse active challenges', 'Filter by category'],
+    category: 'feature'
+  },
+  
+  // Feature: Learning Path
+  'learning-path': {
+    keywords: ['learning', 'education', 'skills', 'certificates', 'datacamp', 'alx', 'plp'],
+    shortAnswer: 'The Learning Path tracks your progress on Datacamp, ALX, and Power Learn Project with certificates and skill badges.',
+    detailedAnswer: `The Learning Path section integrates with Datacamp, ALX (Africa Leadership X), and Power Learn Project (PLP). You can track your learning progress, see modules completed, certificates earned, and skill badges achieved. This builds your educational foundation while developing both technical (AI, coding) and business skills.`,
+    relatedTopics: ['education', 'skills-development'],
+    suggestedActions: ['Navigate to Learning Path', 'View your certificates', 'Check skill progress'],
+    category: 'feature'
+  },
+  
+  // Feature: Team Matcher
+  'team-matcher': {
+    keywords: ['team', 'co-founder', 'partner', 'match', 'teammates', 'collaboration'],
+    shortAnswer: 'The Team Matcher helps you find compatible co-founders based on skills, goals, and values alignment.',
+    detailedAnswer: `The Team Matcher connects you with potential co-founders who share your vision and complement your skills. It considers your balance (King/Priest), target mountain, skill compatibility, and values alignment to suggest the best matches. You can see compatibility scores and reach out to build your venture team.`,
+    relatedTopics: ['co-founders', 'team-building'],
+    suggestedActions: ['Navigate to Team Matcher', 'View potential matches', 'Check compatibility scores'],
+    category: 'feature'
+  },
+  
+  // Feature: Problem Matcher
+  'problem-matcher': {
+    keywords: ['problems', 'strategic problems', 'opportunities', 'find problems', 'match problems'],
+    shortAnswer: 'The Problem Matcher shows strategic problems aligned with your mountain and skills.',
+    detailedAnswer: `The Problem Matcher displays strategic problems facing Africa across all 7 Mountains. You can search by mountain, category, or keyword to find problems that match your calling and expertise. Each problem includes impact potential, territory scope, and recommended next steps.`,
+    relatedTopics: ['opportunities', 'problem-solving'],
+    suggestedActions: ['Navigate to Problem Matcher', 'Search for problems', 'Filter by mountain'],
+    category: 'feature'
+  },
+  
+  // Feature: Fundraising Dashboard
+  'fundraising': {
+    keywords: ['fundraising', 'investment', 'readiness', 'investor', 'funding', 'pitch'],
+    shortAnswer: 'The Fundraising Dashboard shows your investment readiness score, key metrics, and fundraising milestones.',
+    detailedAnswer: `The Fundraising Dashboard displays your investment readiness score (typically 82%+), funding stage indicators (seed, series A, etc.), key metrics (ARR, growth rate, burn), and fundraising milestones. It shows what investors care about and helps you prepare for funding conversations.`,
+    relatedTopics: ['investment', 'pitch-deck'],
+    suggestedActions: ['Navigate to Fundraising Dashboard', 'Check readiness score', 'View key metrics'],
+    category: 'feature'
+  },
+  
+  // Feature: Studio Incubation
+  'studios': {
+    keywords: ['studios', 'studio incubation', 'fintech', 'legaltech', 'agritech', 'healthtech', 'edutech', 'mediatech'],
+    shortAnswer: 'Studio Incubation offers six specialized studios: FinTech, LegalTech, AgriTech, HealthTech, EduTech, and MediaTech.',
+    detailedAnswer: `Studio Incubation provides specialized environments for launching ventures in specific industries. Each studio has resources, mentors, and templates tailored to that sector. You can categorize your project and receive studio-specific guidance for FinTech, LegalTech, AgriTech, HealthTech, EduTech, or MediaTech.`,
+    relatedTopics: ['specialization', 'industry-specific'],
+    suggestedActions: ['Navigate to Studio Incubation', 'Choose your studio', 'View studio resources'],
+    category: 'feature'
+  },
+  
+  // Feature: Analytics Dashboard
+  'analytics': {
+    keywords: ['analytics', 'metrics', 'stats', 'tracking', 'data', 'performance'],
+    shortAnswer: 'The Analytics Dashboard provides detailed progress tracking, impact metrics, and performance analytics across all your ventures.',
+    detailedAnswer: `The Analytics Dashboard gives you a comprehensive view of your progress. You can track territory taken percentage, wealth created, lives impacted, active projects, skills development, and overall impact metrics. It shows you where you're excelling and areas needing attention.`,
+    relatedTopics: ['progress-tracking', 'metrics'],
+    suggestedActions: ['Navigate to Analytics', 'View detailed metrics', 'Track your progress'],
+    category: 'feature'
+  },
+  
+  // Feature: Wealth Simulator
+  'wealth-simulator-feature': {
+    keywords: ['wealth simulator', 'simulate', 'project wealth', 'impact projection'],
+    shortAnswer: 'The Wealth Simulator models how your ventures create generational impact over five generations.',
+    detailedAnswer: `The Wealth Simulator uses interactive sliders to project your venture's impact. Adjust factors like initial investment, growth rate, job creation, lives impacted, and giving percentage. See how wealth, impact, and legacy multiply across five generations. It helps you visualize the true long-term value of your kingdom venture.`,
+    relatedTopics: ['generational-wealth', 'impact-modeling'],
+    suggestedActions: ['Navigate to Wealth Simulator', 'Run projections', 'See 5-generation impact'],
+    category: 'feature'
+  },
+  
+  // Feature: Case Studies
+  'case-studies': {
+    keywords: ['case studies', 'examples', 'success stories', 'portfolio', 'projects'],
+    shortAnswer: 'Case Studies showcase successful ventures launched through the platform with real results and impact.',
+    detailedAnswer: `Case Studies highlight successful ventures built by students in the program. Each case study shows the problem solved, solution implemented, mountains conquered, revenue generated, lives impacted, and lessons learned. Use these as inspiration and templates for your own venture.`,
+    relatedTopics: ['success-stories', 'examples'],
+    suggestedActions: ['Navigate to Case Studies', 'Browse success stories', 'Get inspired'],
+    category: 'feature'
+  },
+  
+  // Feature: Testimonials
+  'testimonials': {
+    keywords: ['testimonials', 'reviews', 'feedback', 'what people say', 'student stories'],
+    shortAnswer: 'Testimonials show real feedback from students about their experience with Project AI Studio.',
+    detailedAnswer: `Testimonials feature real stories from students who have transformed their lives through the platform. Read about how others found their calling, launched ventures, conquered territories, and built generational wealth while maintaining kingdom balance.`,
+    relatedTopics: ['success-stories', 'feedback'],
+    suggestedActions: ['Navigate to Testimonials', 'Read student stories'],
+    category: 'feature'
+  },
+  
+  // Feature: Corporate Partners
+  'corporate-partners': {
+    keywords: ['partners', 'corporate', 'sponsors', 'collaborations', 'network'],
+    shortAnswer: 'Corporate Partners are organizations that support and collaborate with Project AI Studio.',
+    detailedAnswer: `Corporate Partners are companies and organizations that provide resources, mentorship, and opportunities for students. These partnerships help connect you with potential clients, investors, and collaborators. Each partner brings unique value to specific mountains or industries.`,
+    relatedTopics: ['network', 'partnerships'],
+    suggestedActions: ['Navigate to Corporate Partners', 'Explore opportunities', 'Connect with partners'],
+    category: 'feature'
+  },
+  
+  // Feature: Events
+  'events': {
+    keywords: ['events', 'calendar', 'workshops', 'training', 'meetups'],
+    shortAnswer: 'The Event Calendar shows upcoming workshops, trainings, and networking events.',
+    detailedAnswer: `The Event Calendar lists all upcoming events including workshops on launching ventures, Kings & Priests balance training, Joseph Principle timing sessions, pitch practice, and networking meetups. You can RSVP and add events to your calendar.`,
+    relatedTopics: ['networking', 'training'],
+    suggestedActions: ['Navigate to Event Calendar', 'View upcoming events', 'RSVP'],
+    category: 'feature'
+  },
+  
+  // Feature: Pilot Results
+  'pilot-results': {
+    keywords: ['pilot', 'results', 'impact', 'outcomes', 'track record'],
+    shortAnswer: 'Pilot Results showcase the real impact of Project AI Studio with actual metrics and outcomes.',
+    detailedAnswer: `Pilot Results display concrete metrics from the beta program including: ventures launched, territories conquered, balance scores achieved, wealth generated, lives impacted, and success rates. This proves the platform's effectiveness and validates the model.`,
+    relatedTopics: ['proof', 'validation', 'impact'],
+    suggestedActions: ['Navigate to Pilot Results', 'View impact data'],
+    category: 'feature'
+  },
+  
+  // Feature: Legal Structure
+  'legal': {
+    keywords: ['legal', 'structure', 'company', 'incorporation', 'compliance'],
+    shortAnswer: 'The Legal Structure guide helps you understand incorporation, compliance, and legal setup for your venture.',
+    detailedAnswer: `The Legal Structure section provides guidance on setting up your venture legally. It covers business registration, incorporation options (LLC, Corporation, etc.), compliance requirements, intellectual property protection, and legal considerations specific to each mountain (e.g., education licensing, media regulations).`,
+    relatedTopics: ['compliance', 'setup'],
+    suggestedActions: ['Navigate to Legal Structure', 'Learn legal requirements'],
+    category: 'feature'
+  },
+  
+  // Feature: Revenue Model
+  'revenue-model': {
+    keywords: ['revenue', 'model', 'pricing', 'monetization', 'business model'],
+    shortAnswer: 'The Revenue Model explains how Project AI Studio makes money and its sustainability model.',
+    detailedAnswer: `The Revenue Model section describes how Project AI Studio generates revenue through student fees, corporate partnerships, grants, and investment returns from successful ventures. It shows the platform's financial sustainability and commitment to affordable access.`,
+    relatedTopics: ['business-model', 'sustainability'],
+    suggestedActions: ['Navigate to Revenue Model', 'Understand pricing'],
+    category: 'feature'
+  },
+  
+  // Feature: Advisory Board
+  'advisory-board': {
+    keywords: ['advisory', 'board', 'mentors', 'advisors', 'guidance'],
+    shortAnswer: 'The Advisory Board consists of experienced leaders who provide strategic guidance.',
+    detailedAnswer: `The Advisory Board includes experts in each mountain, successful entrepreneurs, business leaders, and ministry veterans. They provide strategic guidance, review ventures, offer mentorship, and help students navigate challenges. Each advisor brings decades of relevant experience.`,
+    relatedTopics: ['mentorship', 'guidance'],
+    suggestedActions: ['Navigate to Advisory Board', 'Meet the advisors'],
+    category: 'feature'
+  },
+  
+  // Concept: AI Co-Founders
+  'ai-co-founders': {
+    keywords: ['ai co-founders', 'co-founder', 'the builder', 'the steward', 'the strategist', 'the sage'],
+    shortAnswer: 'AI Co-Founders are four specialized AI advisors: The Builder (technical), The Steward (ethics), The Strategist (strategy), and The Sage (purpose).',
+    detailedAnswer: `AI Co-Founders are four AI personalities that guide you through different aspects of venture building. The Builder focuses on technical implementation and architecture. The Steward ensures ethical alignment and sustainability. The Strategist analyzes markets and positioning. The Sage considers long-term purpose and legacy. Each has unique expertise and personality.`,
+    relatedTopics: ['ai-advisors', 'guidance'],
+    suggestedActions: ['Navigate to Project Incubator', 'Chat with AI co-founder'],
+    category: 'concept'
+  },
+  
+  // Concept: Legacy Terms
+  'legacy-terms': {
+    keywords: ['legacy language', 'ministry business', 'terminology', 'language translator'],
+    shortAnswer: 'Legacy Terms translates between ministry language and business language to help you communicate effectively in both worlds.',
+    detailedAnswer: `The Legacy Language Guide translates ministry terminology into business terms and vice versa. For example: "Taking territory" = "Market penetration", "Anointing" = "Competitive advantage", "Stewardship" = "Resource management". This helps you communicate in both ministry and business contexts.`,
+    relatedTopics: ['communication', 'terminology'],
+    suggestedActions: ['View Legacy Terms in Project Incubator'],
+    category: 'concept'
+  },
+  
+  // Concept: Values Alignment
+  'values-alignment': {
+    keywords: ['values', 'alignment', 'ethical', 'purpose', 'kingdom values'],
+    shortAnswer: 'Values Alignment ensures your ventures align with biblical principles while creating profit and impact.',
+    detailedAnswer: `Values Alignment checks how well your venture aligns with kingdom principles including purpose alignment, ethical foundation, sustainability, impact potential, scalability, and kingdom advancement. You get a score (typically 84%+) showing how well your venture balances profit with purpose.`,
+    relatedTopics: ['ethics', 'purpose'],
+    suggestedActions: ['Complete values check in Project Incubator'],
+    category: 'concept'
   }
 };
 
@@ -243,13 +433,27 @@ export function searchKnowledgeBase(query: string): {
   
   for (const [key, topic] of Object.entries(knowledgeBase)) {
     const matchKeywords = topic.keywords.filter(keyword => 
-      lowerQuery.includes(keyword.toLowerCase())
+      lowerQuery.includes(keyword.toLowerCase()) || 
+      keyword.toLowerCase().includes(lowerQuery)
     );
     
-    if (matchKeywords.length > 0) {
-      // Confidence based on how many keywords matched
-      const confidence = Math.min(1.0, matchKeywords.length / topic.keywords.length);
-      results.push({ topic, confidence, matchKeywords });
+    // Also check if individual words in query match
+    const queryWords = lowerQuery.split(' ').filter(w => w.length > 2);
+    const wordMatches = queryWords.filter(word => 
+      topic.keywords.some(kw => kw.toLowerCase().includes(word))
+    );
+    
+    // Combine both matching strategies
+    const totalMatches = new Set([...matchKeywords, ...wordMatches]);
+    
+    if (totalMatches.size > 0 || topic.keywords.some(kw => kw === lowerQuery.trim())) {
+      // Higher confidence for exact matches
+      const hasExactMatch = topic.keywords.some(kw => kw === lowerQuery.trim());
+      const confidence = hasExactMatch 
+        ? 1.0 
+        : Math.min(1.0, (totalMatches.size / topic.keywords.length) + 0.3);
+      
+      results.push({ topic, confidence, matchKeywords: Array.from(totalMatches) });
     }
   }
   
@@ -259,7 +463,8 @@ export function searchKnowledgeBase(query: string): {
 // Get quick answer for a topic
 export function getQuickAnswer(query: string): string | null {
   const results = searchKnowledgeBase(query);
-  if (results.length > 0 && results[0].confidence > 0.5) {
+  // Lowered threshold to 0.3 to catch more queries
+  if (results.length > 0 && results[0].confidence > 0.3) {
     return results[0].topic.shortAnswer;
   }
   return null;
