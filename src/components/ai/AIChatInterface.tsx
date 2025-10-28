@@ -43,8 +43,10 @@ export default function AIChatInterface({ coFounderName, projectContext }: AICha
   const sendMessage = async () => {
     if (!input.trim()) return;
     
-    // Stop listening if active
-    if (isListening) stopListening();
+    // Stop listening if active to prevent feedback
+    if (isListening) {
+      stopListening();
+    }
 
     const userMessage: Message = {
       type: 'user',

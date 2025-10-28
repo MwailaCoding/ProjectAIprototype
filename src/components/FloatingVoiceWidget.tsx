@@ -24,7 +24,7 @@ export default function FloatingVoiceWidget({
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleTranscript = (transcript: string) => {
-    setInput(transcript);
+    if (!transcript) return;
     
     // Check for wake word
     if (detectWakeWord(transcript)) {
@@ -33,8 +33,9 @@ export default function FloatingVoiceWidget({
       return;
     }
 
-    // Process the command
+    // Set input and process the command
     if (isExpanded && transcript) {
+      setInput(transcript);
       processCommand(transcript);
     }
   };
@@ -50,6 +51,11 @@ export default function FloatingVoiceWidget({
   const { speak, isSpeaking } = useSpeechSynthesis();
 
   const processCommand = async (commandText: string) => {
+    // Stop listening before processing to prevent feedback
+    if (isListening) {
+      stopListening();
+    }
+    
     setIsProcessing(true);
     
     const userMessage: ConversationMessage = {

@@ -58,6 +58,9 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
   const [isSupported, setIsSupported] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const isListeningRef = useRef(false);
+  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSpeechTimeRef = useRef<number>(0);
+  const isMobileRef = useRef<boolean>(false);
 
   useEffect(() => {
     const SpeechRecognition = 
@@ -72,9 +75,20 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     }
 
     const recognition = new SpeechRecognition() as SpeechRecognition;
+    // Use continuous for better mobile compatibility, but control it manually
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
+    
+    // Detect mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    isMobileRef.current = isMobile;
+    
+    // Mobile browsers need special handling
+    if (isMobile) {
+      // On mobile, we need continuous for it to work properly
+      recognition.continuous = true;
+    }
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       let interimText = '';
@@ -86,8 +100,10 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
         
         if (result.isFinal) {
           finalText += transcript + ' ';
+          lastSpeechTimeRef.current = Date.now();
         } else {
           interimText += transcript + ' ';
+          lastSpeechTimeRef.current = Date.now();
         }
       }
 
@@ -95,14 +111,49 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
 
       if (interimText.trim()) {
         setInterimTranscript(interimText.trim());
+        // Reset silence timeout when speech detected
+        if (silenceTimeoutRef.current) {
+          clearTimeout(silenceTimeoutRef.current);
+        }
+        // Set new timeout for silence detection (longer on mobile)
+        const silenceTimeout = isMobileRef.current ? 3000 : 2000;
+        silenceTimeoutRef.current = setTimeout(() => {
+          console.log('Silence detected, auto-stopping...');
+          if (isListeningRef.current && recognitionRef.current) {
+            isListeningRef.current = false;
+            try {
+              recognitionRef.current.stop();
+            } catch (err) {
+              console.error('Error auto-stopping:', err);
+            }
+          }
+        }, silenceTimeout);
       }
 
       if (finalText) {
         setTranscript(finalText.trim());
         setInterimTranscript('');
+        
+        // Clear silence timeout
+        if (silenceTimeoutRef.current) {
+          clearTimeout(silenceTimeoutRef.current);
+        }
+        
         if (onResult) {
           onResult(finalText.trim());
         }
+        
+        // Auto-stop after getting final result (like Siri)
+        setTimeout(() => {
+          if (isListeningRef.current && recognitionRef.current) {
+            isListeningRef.current = false;
+            try {
+              recognitionRef.current.stop();
+            } catch (err) {
+              console.error('Error auto-stopping after final result:', err);
+            }
+          }
+        }, 500);
       }
     };
 
@@ -113,15 +164,18 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       if (event.error === 'network') {
         errorMessage = 'Network error. Check your internet connection.';
       } else if (event.error === 'not-allowed') {
-        errorMessage = 'Microphone permission denied. Please allow microphone access.';
+        errorMessage = 'Microphone permission denied. Please allow microphone access in your browser settings.';
       } else if (event.error === 'no-speech') {
-        errorMessage = 'No speech detected. Try again.';
+        // Don't show error for no-speech on mobile, it's common
+        console.log('No speech detected');
+        return;
       } else if (event.error === 'aborted') {
-        errorMessage = 'Speech recognition was interrupted.';
+        console.log('Speech recognition aborted');
+        return;
       } else if (event.error === 'audio-capture') {
-        errorMessage = 'Microphone not found or not accessible.';
+        errorMessage = 'Microphone not found or not accessible. Please check your device settings.';
       } else if (event.error === 'service-not-allowed') {
-        errorMessage = 'Speech recognition service is not available.';
+        errorMessage = 'Speech recognition service is not available. Ensure you are using HTTPS.';
       }
       
       setError(errorMessage);
@@ -132,22 +186,27 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     recognition.onend = () => {
       console.log('Recognition ended, isListeningRef:', isListeningRef.current);
       
-      // Only restart if we're still supposed to be listening
-      if (isListeningRef.current && recognition.continuous) {
-        try {
-          console.log('Restarting recognition...');
-          recognition.start();
-        } catch (err) {
-          console.log('Recognition restart error (already listening):', err);
-        }
-      } else {
-        setIsListening(false);
+      // Clear any pending silence timeout
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+        silenceTimeoutRef.current = null;
       }
+      
+      // Don't auto-restart - user should click to start again (Siri-like)
+      // This works better on both desktop and mobile
+      setIsListening(false);
+      isListeningRef.current = false;
     };
 
     recognitionRef.current = recognition;
 
     return () => {
+      // Clear any pending timeout
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+        silenceTimeoutRef.current = null;
+      }
+      
       if (recognitionRef.current) {
         recognitionRef.current.abort();
         recognitionRef.current = null;
@@ -166,6 +225,13 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       return;
     }
 
+    // Check for HTTPS requirement on mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile && window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      setError('Speech recognition requires HTTPS on mobile devices. Please use a secure connection.');
+      return;
+    }
+
     try {
       console.log('Starting speech recognition...');
       setTranscript('');
@@ -176,7 +242,8 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       recognitionRef.current.start();
     } catch (err) {
       console.error('Error starting speech recognition:', err);
-      setError('Failed to start speech recognition');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to start speech recognition';
+      setError(errorMsg);
       setIsListening(false);
       isListeningRef.current = false;
     }
@@ -194,12 +261,25 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     try {
       console.log('Stopping speech recognition...');
       isListeningRef.current = false;
+      
+      // Clear silence timeout
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+        silenceTimeoutRef.current = null;
+      }
+      
       recognitionRef.current.stop();
       setIsListening(false);
     } catch (err) {
       console.error('Error stopping speech recognition:', err);
       isListeningRef.current = false;
       setIsListening(false);
+      
+      // Clear timeout on error too
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+        silenceTimeoutRef.current = null;
+      }
     }
   }, []);
 

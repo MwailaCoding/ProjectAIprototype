@@ -48,6 +48,11 @@ export default function VoiceAssistant() {
   const { speak, isSpeaking, stop: stopSpeaking } = useSpeechSynthesis();
 
   const processCommand = async (commandText: string) => {
+    // Stop listening before processing to prevent feedback
+    if (recListening) {
+      stopListening();
+    }
+
     const userMessage: ConversationMessage = {
       id: Date.now().toString(),
       type: 'user',
