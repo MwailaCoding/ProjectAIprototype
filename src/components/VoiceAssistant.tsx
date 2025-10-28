@@ -17,7 +17,6 @@ const QUICK_TOPICS = [
 
 export default function VoiceAssistant() {
   const [conversation, setConversation] = useState<ConversationMessage[]>([]);
-  const [isListening, setIsListening] = useState(false);
   const [wakeWordMode, setWakeWordMode] = useState(false);
   const [personality, setPersonality] = useState<'The Builder' | 'The Steward' | 'The Strategist' | 'The Sage'>('The Builder');
   const [showSettings, setShowSettings] = useState(false);
@@ -30,14 +29,10 @@ export default function VoiceAssistant() {
     if (transcript) {
       if (wakeWordMode && detectWakeWord(transcript)) {
         setWakeWordMode(false);
-        setIsListening(true);
         return;
       }
       
-      if (isListening) {
-        processCommand(transcript);
-        setIsListening(false);
-      }
+      processCommand(transcript);
     }
   };
 
@@ -102,10 +97,8 @@ export default function VoiceAssistant() {
   const toggleListening = () => {
     if (recListening) {
       stopListening();
-      setIsListening(false);
     } else {
       startListening();
-      setIsListening(true);
     }
   };
 
@@ -193,7 +186,7 @@ export default function VoiceAssistant() {
             
             {/* Middle ring */}
             <div className={`absolute inset-4 rounded-full border-2 transition-all ${
-              isListening 
+              recListening 
                 ? 'border-cyan-500 animate-pulse' 
                 : isSpeaking 
                 ? 'border-purple-500' 
@@ -202,7 +195,7 @@ export default function VoiceAssistant() {
             
             {/* Center circle */}
             <div className="absolute inset-12 rounded-full bg-slate-800 flex items-center justify-center">
-              {isListening ? (
+              {recListening ? (
                 <div className="flex space-x-1">
                   <div className="w-3 h-8 bg-cyan-500 rounded-full animate-pulse" style={{ animationDelay: '0s' }}></div>
                   <div className="w-3 h-12 bg-cyan-500 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }}></div>
