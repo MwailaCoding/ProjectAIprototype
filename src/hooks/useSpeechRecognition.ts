@@ -56,11 +56,10 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
   const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSupported, setIsSupported] = useState(false);
-  const manualStopRef = useRef(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const isListeningRef = useRef(false);
 
   useEffect(() => {
-    // Check for browser support
     const SpeechRecognition = 
       (window as any).SpeechRecognition || 
       (window as any).webkitSpeechRecognition;
@@ -72,18 +71,16 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       return;
     }
 
-    // Initialize recognition
     const recognition = new SpeechRecognition() as SpeechRecognition;
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
-    // Event handlers
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       let interimText = '';
       let finalText = '';
 
-      for (let i = event.resultIndex; i < event.results.length; i++) {
+      for (let i = 0; i < event.results.length; i++) {
         const result = event.results[i];
         const transcript = result.item(0).transcript;
         
@@ -94,20 +91,15 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
         }
       }
 
-      // Debug logging
-      console.log('Interim:', interimText, 'Final:', finalText);
+      console.log('Recognition result - Interim:', interimText, 'Final:', finalText);
 
-      // Update interim transcript in real-time (show what you're saying)
       if (interimText.trim()) {
         setInterimTranscript(interimText.trim());
-      } else if (!finalText) {
-        // Keep showing "Speak now..." if no transcript yet
-        setInterimTranscript('');
       }
 
       if (finalText) {
         setTranscript(finalText.trim());
-        setInterimTranscript(''); // Clear interim when final arrives
+        setInterimTranscript('');
         if (onResult) {
           onResult(finalText.trim());
         }
@@ -118,7 +110,6 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       console.error('Speech recognition error:', event.error, event.message);
       let errorMessage = `Speech recognition error: ${event.error}`;
       
-      // Handle specific error types
       if (event.error === 'network') {
         errorMessage = 'Network error. Check your internet connection.';
       } else if (event.error === 'not-allowed') {
@@ -135,23 +126,19 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       
       setError(errorMessage);
       setIsListening(false);
+      isListeningRef.current = false;
     };
 
     recognition.onend = () => {
-      // If manually stopped, don't restart
-      if (manualStopRef.current) {
-        setIsListening(false);
-        manualStopRef.current = false; // Reset for next time
-        return;
-      }
+      console.log('Recognition ended, isListeningRef:', isListeningRef.current);
       
-      // Auto-restart if continuous and still supposed to be listening
-      if (isListening && recognition.continuous) {
+      // Only restart if we're still supposed to be listening
+      if (isListeningRef.current && recognition.continuous) {
         try {
+          console.log('Restarting recognition...');
           recognition.start();
         } catch (err) {
-          // Likely already listening, which is fine
-          console.log('Recognition restart:', err);
+          console.log('Recognition restart error (already listening):', err);
         }
       } else {
         setIsListening(false);
@@ -174,33 +161,47 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       return;
     }
 
-    if (isListening) return;
+    if (isListeningRef.current) {
+      console.log('Already listening, skipping start');
+      return;
+    }
 
     try {
+      console.log('Starting speech recognition...');
       setTranscript('');
       setInterimTranscript('');
       setError(null);
-      manualStopRef.current = false;
+      isListeningRef.current = true;
       setIsListening(true);
       recognitionRef.current.start();
     } catch (err) {
       console.error('Error starting speech recognition:', err);
       setError('Failed to start speech recognition');
       setIsListening(false);
+      isListeningRef.current = false;
     }
-  }, [isListening]);
+  }, []);
 
   const stopListening = useCallback(() => {
-    if (!recognitionRef.current || !isListening) return;
+    if (!recognitionRef.current) {
+      return;
+    }
+
+    if (!isListeningRef.current) {
+      return;
+    }
 
     try {
-      manualStopRef.current = true;
+      console.log('Stopping speech recognition...');
+      isListeningRef.current = false;
       recognitionRef.current.stop();
       setIsListening(false);
     } catch (err) {
       console.error('Error stopping speech recognition:', err);
+      isListeningRef.current = false;
+      setIsListening(false);
     }
-  }, [isListening]);
+  }, []);
 
   return {
     transcript,
@@ -212,8 +213,3 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     error
   };
 }
-
-
-
-
-
