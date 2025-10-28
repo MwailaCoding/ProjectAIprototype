@@ -213,3 +213,4 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     error
   };
 }
+
