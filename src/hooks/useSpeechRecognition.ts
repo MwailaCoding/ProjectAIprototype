@@ -56,6 +56,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
   const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSupported, setIsSupported] = useState(false);
+  const manualStopRef = useRef(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
@@ -137,7 +138,24 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     };
 
     recognition.onend = () => {
-      setIsListening(false);
+      // If manually stopped, don't restart
+      if (manualStopRef.current) {
+        setIsListening(false);
+        manualStopRef.current = false; // Reset for next time
+        return;
+      }
+      
+      // Auto-restart if continuous and still supposed to be listening
+      if (isListening && recognition.continuous) {
+        try {
+          recognition.start();
+        } catch (err) {
+          // Likely already listening, which is fine
+          console.log('Recognition restart:', err);
+        }
+      } else {
+        setIsListening(false);
+      }
     };
 
     recognitionRef.current = recognition;
@@ -162,6 +180,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       setTranscript('');
       setInterimTranscript('');
       setError(null);
+      manualStopRef.current = false;
       setIsListening(true);
       recognitionRef.current.start();
     } catch (err) {
@@ -175,6 +194,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     if (!recognitionRef.current || !isListening) return;
 
     try {
+      manualStopRef.current = true;
       recognitionRef.current.stop();
       setIsListening(false);
     } catch (err) {
