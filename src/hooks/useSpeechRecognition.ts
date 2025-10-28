@@ -61,6 +61,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
   const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastSpeechTimeRef = useRef<number>(0);
   const isMobileRef = useRef<boolean>(false);
+  const hasDetectedSpeechRef = useRef<boolean>(false);
 
   useEffect(() => {
     const SpeechRecognition = 
@@ -75,8 +76,6 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     }
 
     const recognition = new SpeechRecognition() as SpeechRecognition;
-    // Use continuous for better mobile compatibility, but control it manually
-    recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
     
@@ -84,11 +83,8 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     isMobileRef.current = isMobile;
     
-    // Mobile browsers need special handling
-    if (isMobile) {
-      // On mobile, we need continuous for it to work properly
-      recognition.continuous = true;
-    }
+    // Mobile browsers need continuous mode for proper functionality
+    recognition.continuous = isMobile;
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       let interimText = '';
@@ -110,6 +106,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       console.log('Recognition result - Interim:', interimText, 'Final:', finalText);
 
       if (interimText.trim()) {
+        hasDetectedSpeechRef.current = true;
         setInterimTranscript(interimText.trim());
         // Reset silence timeout when speech detected
         if (silenceTimeoutRef.current) {
@@ -119,8 +116,9 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
         const silenceTimeout = isMobileRef.current ? 3000 : 2000;
         silenceTimeoutRef.current = setTimeout(() => {
           console.log('Silence detected, auto-stopping...');
-          if (isListeningRef.current && recognitionRef.current) {
+          if (isListeningRef.current && recognitionRef.current && hasDetectedSpeechRef.current) {
             isListeningRef.current = false;
+            hasDetectedSpeechRef.current = false;
             try {
               recognitionRef.current.stop();
             } catch (err) {
@@ -131,29 +129,21 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       }
 
       if (finalText) {
+        hasDetectedSpeechRef.current = true;
         setTranscript(finalText.trim());
         setInterimTranscript('');
         
         // Clear silence timeout
         if (silenceTimeoutRef.current) {
           clearTimeout(silenceTimeoutRef.current);
+          silenceTimeoutRef.current = null;
         }
         
         if (onResult) {
           onResult(finalText.trim());
         }
         
-        // Auto-stop after getting final result (like Siri)
-        setTimeout(() => {
-          if (isListeningRef.current && recognitionRef.current) {
-            isListeningRef.current = false;
-            try {
-              recognitionRef.current.stop();
-            } catch (err) {
-              console.error('Error auto-stopping after final result:', err);
-            }
-          }
-        }, 500);
+        // Let continuous mode handle restart, don't auto-stop here
       }
     };
 
@@ -192,10 +182,20 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
         silenceTimeoutRef.current = null;
       }
       
-      // Don't auto-restart - user should click to start again (Siri-like)
-      // This works better on both desktop and mobile
-      setIsListening(false);
-      isListeningRef.current = false;
+      // Auto-restart if we're supposed to be listening and we're on mobile (continuous mode)
+      if (isListeningRef.current && recognitionRef.current && isMobileRef.current) {
+        try {
+          console.log('Auto-restarting recognition (mobile)...');
+          recognitionRef.current.start();
+        } catch (err) {
+          console.log('Recognition restart error (already listening):', err);
+          setIsListening(false);
+          isListeningRef.current = false;
+        }
+      } else {
+        setIsListening(false);
+        isListeningRef.current = false;
+      }
     };
 
     recognitionRef.current = recognition;
@@ -238,6 +238,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void): U
       setInterimTranscript('');
       setError(null);
       isListeningRef.current = true;
+      hasDetectedSpeechRef.current = false; // Reset speech detection
       setIsListening(true);
       recognitionRef.current.start();
     } catch (err) {
